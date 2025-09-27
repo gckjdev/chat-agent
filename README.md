@@ -1,14 +1,17 @@
 # AI Chatbot
 
-A modern AI chatbot built with Next.js, TypeScript, and the AI SDK by Vercel.
+A modern AI chatbot built with Next.js, TypeScript, and the latest AI SDK by Vercel, featuring comprehensive request/response monitoring.
 
 ## Features
 
-- 🤖 Modern AI-powered chat interface
-- 🎨 Beautiful, responsive UI with Tailwind CSS
-- ⚡ Real-time streaming responses
-- 🌙 Dark mode support
-- 📱 Mobile-friendly design
+- 🤖 **Advanced AI-powered chat** with DeepSeek integration
+- 🎨 **Beautiful, responsive UI** with Tailwind CSS
+- ⚡ **Real-time streaming responses** using AI SDK 5 patterns
+- 🔍 **Comprehensive monitoring** - complete request/response logging
+- 🌙 **Dark mode support** with modern design
+- 📱 **Mobile-friendly design** with responsive layout
+- 🛡️ **Error handling** with retry functionality
+- 🚀 **Latest AI SDK patterns** - DefaultChatTransport, sendMessage, parts rendering
 
 ## Getting Started
 
@@ -16,7 +19,7 @@ A modern AI chatbot built with Next.js, TypeScript, and the AI SDK by Vercel.
 
 - Node.js 18+ 
 - npm or yarn
-- OpenAI API key
+- DeepSeek API key (get from [DeepSeek Platform](https://platform.deepseek.com/api_keys))
 
 ### Installation
 
@@ -32,19 +35,20 @@ npm install
 ```
 
 3. Set up environment variables:
-Create a `.env.local` file in the root directory and add your API configuration:
+Create a `.env.local` file in the root directory:
 
-**For DeepSeek (Recommended):**
 ```bash
+# Required: DeepSeek API Key
 DEEPSEEK_API_KEY=your_deepseek_api_key_here
-DEEPSEEK_MODEL=deepseek-chat
+
+# Optional: Custom model (defaults to deepseek-chat)
+# DEEPSEEK_MODEL=deepseek-chat
+
+# Optional: Custom base URL (defaults to https://api.deepseek.com/v1)
+# DEEPSEEK_BASE_URL=https://api.deepseek.com/v1
 ```
 
-**Alternative models:**
-- `deepseek-chat` - General purpose chat model
-- `deepseek-reasoner` - Advanced reasoning model
-
-You can get your DeepSeek API key from [DeepSeek Platform](https://platform.deepseek.com/).
+**Get your API key from:** [DeepSeek Platform](https://platform.deepseek.com/api_keys)
 
 4. Run the development server:
 ```bash
@@ -73,12 +77,15 @@ chat-agent/
 
 ## Technologies Used
 
-- **Next.js 15** - React framework
-- **TypeScript** - Type safety
-- **Tailwind CSS** - Styling
-- **AI SDK** - AI integration  
-- **OpenAI Compatible Provider** - Custom provider implementation
-- **DeepSeek API** - Advanced language model via compatible provider
+- **Next.js 14** - React framework with App Router
+- **React 18** - Latest stable React version
+- **TypeScript** - Type safety and development experience
+- **Tailwind CSS** - Modern utility-first styling
+- **AI SDK 5** - Latest Vercel AI SDK with streaming support
+- **@ai-sdk/react 2.x** - React hooks for AI integration
+- **@ai-sdk/openai-compatible** - OpenAI-compatible provider
+- **DeepSeek API** - Advanced language model (deepseek-chat)
+- **Zod 4** - Runtime type validation
 
 ## Customization
 
@@ -108,4 +115,4 @@ Deploy on Vercel (recommended):
 
 ## License
 
-MIT License - feel free to use this project for your own purposes.
+Apache License 2.0 - feel free to use this project for your own purposes.

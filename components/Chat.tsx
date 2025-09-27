@@ -10,68 +10,36 @@ export default function Chat() {
       api: '/api/chat',
     }),
     onFinish: (message) => {
-      console.log('=== ✅ CHAT FINISHED ===');
+      console.log('✅ Message complete:', message.parts?.filter(p => p.type === 'text').map(p => p.text).join('').substring(0, 50) + '...');
     },
     onError: (error) => {
-      console.log('=== ❌ CHAT ERROR ===');
-      console.error('Error object:', error);
+      console.error('❌ Chat error:', error.message);
     }
   });
 
   const [input, setInput] = useState('');
 
-  // Track message changes
-  useEffect(() => {
-    console.log('=== 💬 MESSAGES UPDATED ===');
-    console.log('New message count:', messages?.length || 0);
-    console.log('All messages:', messages);
-    messages?.forEach((msg, index) => {
-      console.log(`Message ${index + 1}:`, {
-        id: msg.id,
-        role: msg.role,
-        parts: msg.parts,
-        textContent: msg.parts?.filter(p => p.type === 'text').map(p => p.text).join('')
-      });
-    });
-    console.log('===========================');
-  }, [messages]);
-
   // Track status changes
   useEffect(() => {
-    console.log('=== ⏳ STATUS CHANGED ===');
-    console.log('Status:', status);
-    console.log('Timestamp:', new Date().toISOString());
-    console.log('========================');
+    console.log('📊 Status:', status);
   }, [status]);
 
-  // Comprehensive frontend logging
-  console.log('=== FRONTEND CHAT STATE ===');
-  console.log('Messages count:', messages?.length || 0);
-  console.log('Input value:', input);
-  console.log('Status:', status);
-  console.log('Error:', error);
-  console.log('sendMessage available:', !!sendMessage);
-  console.log('=========================');
+  // Track message updates
+  useEffect(() => {
+    if (messages.length > 0) {
+      console.log('💬 Messages:', messages.length, 'total');
+    }
+  }, [messages]);
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    console.log('=== FORM SUBMISSION ===');
-    console.log('Input value:', input);
-    console.log('Input length:', input?.length || 0);
-    console.log('Input trimmed:', input?.trim());
-    console.log('Status before submit:', status);
-    console.log('=====================');
-    
     if (input?.trim()) {
-      console.log('Calling sendMessage...');
+      console.log('📝 Sending:', input);
       sendMessage({
         parts: [{ type: 'text', text: input }],
       });
       setInput('');
-      console.log('sendMessage called and input cleared');
-    } else {
-      console.log('Input is empty, not submitting');
     }
   };
 
