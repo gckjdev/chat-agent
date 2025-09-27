@@ -5,10 +5,10 @@ import { convertToModelMessages, streamText, UIMessage } from 'ai';
 export const maxDuration = 30;
 
 // Configure DeepSeek provider using OpenAI Compatible
-const deepseek = createOpenAICompatible({
+const customProvider = createOpenAICompatible({
   name: 'deepseek',
-  apiKey: process.env.DEEPSEEK_API_KEY || '',
-  baseURL: 'https://api.deepseek.com/v1',
+  apiKey: process.env.OPENAI_API_KEY || 'any',
+  baseURL: process.env.OPENAI_BASE_URL || 'https://api.deepseek.com/v1',
   includeUsage: true,
 });
 
@@ -18,16 +18,16 @@ export async function POST(req: Request) {
   // Log essential request info
   console.log('💬 Chat API:', {
     messageCount: messages?.length || 0,
-    hasApiKey: !!process.env.DEEPSEEK_API_KEY,
+    hasApiKey: !!process.env.OPENAI_API_KEY,
     lastMessage: messages?.[messages.length - 1]?.role
   });
 
   // Check API key
-  if (!process.env.DEEPSEEK_API_KEY) {
-    console.error('❌ Missing DEEPSEEK_API_KEY');
+  if (!process.env.OPENAI_API_KEY) {
+    console.error('❌ Missing OPENAI_API_KEY');
     return new Response(
       JSON.stringify({ 
-        error: 'No DeepSeek API key configured. Please add DEEPSEEK_API_KEY to your .env.local file.',
+        error: 'No OpenAI API key configured. Please add OPENAI_API_KEY to your .env.local file.',
       }), 
       { 
         status: 500,
@@ -37,10 +37,12 @@ export async function POST(req: Request) {
   }
 
   try {
-    console.log('🚀 Starting DeepSeek chat...');
+    console.log('🚀 Starting chat...');
+
+    const modelName = 'deepseek-chat';
     
     const result = streamText({
-      model: deepseek('deepseek-chat'),
+      model: customProvider(modelName),
       system: 'You are a helpful assistant.',
       messages: convertToModelMessages(messages),
       onError({ error }) {

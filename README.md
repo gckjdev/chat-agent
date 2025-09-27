@@ -19,7 +19,7 @@ A modern AI chatbot built with Next.js, TypeScript, and the latest AI SDK by Ver
 
 - Node.js 18+ 
 - npm or yarn
-- DeepSeek API key (get from [DeepSeek Platform](https://platform.deepseek.com/api_keys))
+- OpenAI API key or OpenAI-compatible API key (DeepSeek, etc.)
 
 ### Installation
 
@@ -38,17 +38,19 @@ npm install
 Create a `.env.local` file in the root directory:
 
 ```bash
-# Required: DeepSeek API Key
-DEEPSEEK_API_KEY=your_deepseek_api_key_here
+# Required: API Key
+OPENAI_API_KEY=your_api_key_here
 
-# Optional: Custom model (defaults to deepseek-chat)
-# DEEPSEEK_MODEL=deepseek-chat
+# Required: Base URL for your AI provider
+OPENAI_BASE_URL=https://api.deepseek.com/v1
 
-# Optional: Custom base URL (defaults to https://api.deepseek.com/v1)
-# DEEPSEEK_BASE_URL=https://api.deepseek.com/v1
+# The application uses deepseek-chat model by default
 ```
 
-**Get your API key from:** [DeepSeek Platform](https://platform.deepseek.com/api_keys)
+**Supported Providers:**
+- **DeepSeek**: Get API key from [DeepSeek Platform](https://platform.deepseek.com/api_keys)
+- **OpenAI**: Use `https://api.openai.com/v1` as base URL
+- **Other OpenAI-compatible APIs**: Set appropriate base URL
 
 4. Run the development server:
 ```bash
@@ -84,19 +86,28 @@ chat-agent/
 - **AI SDK 5** - Latest Vercel AI SDK with streaming support
 - **@ai-sdk/react 2.x** - React hooks for AI integration
 - **@ai-sdk/openai-compatible** - OpenAI-compatible provider
-- **DeepSeek API** - Advanced language model (deepseek-chat)
+- **OpenAI-compatible APIs** - Supports DeepSeek, OpenAI, and other compatible providers
 - **Zod 4** - Runtime type validation
 
 ## Customization
 
-### Changing the AI Model
+### Changing the AI Provider
 
-Edit `app/api/chat/route.ts` to use a different model:
+Edit `app/api/chat/route.ts` to use a different provider or model:
 
 ```typescript
-const result = await streamText({
-  model: deepseek('deepseek-reasoner'), // Change to deepseek-reasoner for advanced reasoning
-  messages,
+// For OpenAI
+const customProvider = createOpenAICompatible({
+  name: 'openai',
+  apiKey: process.env.OPENAI_API_KEY || '',
+  baseURL: 'https://api.openai.com/v1',
+});
+
+// Use with different models
+const result = streamText({
+  model: customProvider('gpt-4o'), // or 'deepseek-chat', 'deepseek-reasoner'
+  system: 'You are a helpful assistant.',
+  messages: convertToModelMessages(messages),
 });
 ```
 
@@ -110,7 +121,9 @@ Deploy on Vercel (recommended):
 
 1. Push your code to GitHub
 2. Connect your repository to Vercel
-3. Add your `OPENAI_API_KEY` environment variable in Vercel dashboard
+3. Add environment variables in Vercel dashboard:
+   - `OPENAI_API_KEY`: Your API key
+   - `OPENAI_BASE_URL`: Your provider's base URL
 4. Deploy!
 
 ## License
