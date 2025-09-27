@@ -44,7 +44,7 @@ export async function POST(req: Request) {
       system: 'You are a helpful assistant.',
       messages: convertToModelMessages(messages),
       onError({ error }) {
-        console.error('🔥 StreamText error:', error.message);
+        console.error('🔥 StreamText error:', error);
       },
     });
 

@@ -10,7 +10,7 @@ export default function Chat() {
       api: '/api/chat',
     }),
     onFinish: (message) => {
-      console.log('✅ Message complete:', message.parts?.filter(p => p.type === 'text').map(p => p.text).join('').substring(0, 50) + '...');
+      console.log('✅ Message complete:');
     },
     onError: (error) => {
       console.error('❌ Chat error:', error.message);
