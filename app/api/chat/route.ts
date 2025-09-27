@@ -1,5 +1,6 @@
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
-import { convertToModelMessages, streamText, UIMessage } from 'ai';
+import { convertToModelMessages, streamText, UIMessage, createIdGenerator, generateId } from 'ai';
+import { loadChat, saveChat } from '@/lib/chat-store';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -13,10 +14,26 @@ const customProvider = createOpenAICompatible({
 });
 
 export async function POST(req: Request) {
-  const { messages }: { messages: UIMessage[] } = await req.json();
+  const { message, id }: { message?: UIMessage; id?: string; messages?: UIMessage[] } = await req.json();
+  
+  let messages: UIMessage[];
+  let chatId: string;
+  
+  if (message && id) {
+    // Load previous messages from storage and append new message
+    const previousMessages = await loadChat(id);
+    messages = [...previousMessages, message];
+    chatId = id;
+  } else {
+    // Legacy format for backward compatibility
+    const legacyMessages = (await req.json()).messages;
+    messages = legacyMessages || [];
+    chatId = generateId();
+  }
   
   // Log essential request info
   console.log('💬 Chat API:', {
+    chatId: chatId,
     messageCount: messages?.length || 0,
     hasApiKey: !!process.env.OPENAI_API_KEY,
     lastMessage: messages?.[messages.length - 1]?.role
@@ -50,8 +67,17 @@ export async function POST(req: Request) {
       },
     });
 
-    console.log('✅ Stream created, sending response');
-    return result.toUIMessageStreamResponse();
+        console.log('✅ Stream created, sending response');
+        return result.toUIMessageStreamResponse({
+          originalMessages: messages,
+          generateMessageId: createIdGenerator({
+            prefix: 'msg',
+            size: 16,
+          }),
+          onFinish: ({ messages }) => {
+            saveChat({ chatId, messages });
+          },
+        });
   } catch (error) {
     console.error('❌ DeepSeek API error:', error instanceof Error ? error.message : error);
     

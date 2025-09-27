@@ -4,7 +4,9 @@ A modern AI chatbot built with Next.js, TypeScript, and the latest AI SDK by Ver
 
 ## Features
 
-- 🤖 **Advanced AI-powered chat** with DeepSeek integration
+- 🤖 **Advanced AI-powered chat** with OpenAI-compatible API support
+- 💾 **Chat persistence** - conversations saved to local filesystem
+- 🔗 **Individual chat URLs** - each conversation has its own shareable URL  
 - 🎨 **Beautiful, responsive UI** with Tailwind CSS
 - ⚡ **Real-time streaming responses** using AI SDK 5 patterns
 - 🔍 **Comprehensive monitoring** - complete request/response logging
@@ -65,12 +67,20 @@ npm run dev
 chat-agent/
 ├── app/
 │   ├── api/chat/
-│   │   └── route.ts          # Chat API endpoint
+│   │   └── route.ts          # Chat API endpoint with persistence
+│   ├── chat/
+│   │   ├── [id]/
+│   │   │   └── page.tsx      # Individual chat page
+│   │   ├── layout.tsx        # Chat layout
+│   │   └── page.tsx          # New chat creator
 │   ├── globals.css           # Global styles
 │   ├── layout.tsx            # Root layout
-│   └── page.tsx              # Home page
+│   └── page.tsx              # Home page (redirects to /chat)
 ├── components/
-│   └── Chat.tsx              # Main chat component
+│   └── Chat.tsx              # Main chat component with persistence
+├── lib/
+│   └── chat-store.ts         # Chat persistence utilities
+├── .chats/                   # Chat history files (auto-created, gitignored)
 ├── package.json
 ├── tailwind.config.js
 ├── tsconfig.json
@@ -88,6 +98,21 @@ chat-agent/
 - **@ai-sdk/openai-compatible** - OpenAI-compatible provider
 - **OpenAI-compatible APIs** - Supports DeepSeek, OpenAI, and other compatible providers
 - **Zod 4** - Runtime type validation
+
+## How It Works
+
+### Chat Persistence
+
+- **New Chat**: Visit `/` or `/chat` → Creates new chat ID → Redirects to `/chat/[id]`
+- **Save Messages**: Each message automatically saved to `.chats/[id].json`
+- **Load History**: Visit `/chat/[id]` → Loads complete conversation history
+- **Optimized API**: Only sends the last message to server, previous messages loaded from storage
+
+### URL Structure
+
+- `/` - Home page (redirects to new chat)
+- `/chat` - Creates new chat and redirects to `/chat/[id]`
+- `/chat/[id]` - Individual chat page with persistent history
 
 ## Customization
 
@@ -111,6 +136,22 @@ const result = streamText({
 });
 ```
 
+### Chat Storage
+
+Chat messages are stored in `.chats/[chatId].json` files. You can customize the storage implementation in `lib/chat-store.ts`:
+
+```typescript
+// Example: Use database instead of filesystem
+export async function saveChat({ chatId, messages }: { chatId: string; messages: UIMessage[] }) {
+  // Replace with your database implementation
+  await db.chats.upsert({
+    where: { id: chatId },
+    update: { messages },
+    create: { id: chatId, messages }
+  });
+}
+```
+
 ### Styling
 
 The UI uses Tailwind CSS. You can customize the appearance by modifying the classes in `components/Chat.tsx` and `app/globals.css`.
@@ -125,6 +166,8 @@ Deploy on Vercel (recommended):
    - `OPENAI_API_KEY`: Your API key
    - `OPENAI_BASE_URL`: Your provider's base URL
 4. Deploy!
+
+**Note**: For production deployment, consider using a database instead of filesystem storage for chat persistence. The current implementation uses local files which work well for development but may not persist across deployments.
 
 ## License
 

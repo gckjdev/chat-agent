@@ -1,13 +1,24 @@
 'use client';
 
-import { useChat } from '@ai-sdk/react';
+import { useChat, UIMessage } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 import { useEffect, useState } from 'react';
 
-export default function Chat() {
+interface ChatProps {
+  id?: string;
+  initialMessages?: UIMessage[];
+}
+
+export default function Chat({ id, initialMessages }: ChatProps = {}) {
   const { messages, sendMessage, status, error } = useChat({
+    id, // use the provided chat ID
+    messages: initialMessages, // load initial messages
     transport: new DefaultChatTransport({
       api: '/api/chat',
+      // Send only the last message to reduce data transfer
+      prepareSendMessagesRequest({ messages, id }) {
+        return { body: { message: messages[messages.length - 1], id } };
+      },
     }),
     onFinish: (message) => {
       console.log('✅ Message complete:');
