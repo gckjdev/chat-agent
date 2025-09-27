@@ -67,12 +67,15 @@ describe('Clipboard Utilities', () => {
       const result = await copyToClipboard('test');
       
       expect(result.success).toBe(false);
-      expect(result.error).toContain('clipboard access denied');
+      expect(result.error).toContain('Clipboard access denied. Please check browser permissions.');
     });
 
     test('falls back to execCommand when clipboard API unavailable', async () => {
-      // Remove clipboard API
-      delete (navigator as any).clipboard;
+      // Mock clipboard API as unavailable
+      Object.defineProperty(navigator, 'clipboard', {
+        value: undefined,
+        writable: true
+      });
       
       const result = await copyToClipboard('test content');
       
@@ -81,14 +84,17 @@ describe('Clipboard Utilities', () => {
     });
 
     test('returns error when both clipboard API and fallback fail', async () => {
-      // Remove clipboard API and make execCommand fail
-      delete (navigator as any).clipboard;
+      // Mock clipboard API as unavailable and make execCommand fail
+      Object.defineProperty(navigator, 'clipboard', {
+        value: undefined,
+        writable: true
+      });
       mockExecCommand.mockReturnValue(false);
       
       const result = await copyToClipboard('test');
       
       expect(result.success).toBe(false);
-      expect(result.error).toContain('copy operation failed');
+      expect(result.error).toContain('Copy operation failed. Please manually select and copy the text.');
     });
 
     test('handles insecure context gracefully', async () => {
@@ -187,13 +193,22 @@ describe('Clipboard Utilities', () => {
     });
 
     test('returns true when only execCommand is available', () => {
-      delete (navigator as any).clipboard;
+      Object.defineProperty(navigator, 'clipboard', {
+        value: undefined,
+        writable: true
+      });
       expect(isClipboardSupported()).toBe(true);
     });
 
     test('returns false when neither method is available', () => {
-      delete (navigator as any).clipboard;
-      delete (document as any).execCommand;
+      Object.defineProperty(navigator, 'clipboard', {
+        value: undefined,
+        writable: true
+      });
+      Object.defineProperty(document, 'execCommand', {
+        value: undefined,
+        writable: true
+      });
       
       expect(isClipboardSupported()).toBe(false);
     });

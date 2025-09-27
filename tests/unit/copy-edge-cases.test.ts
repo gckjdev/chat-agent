@@ -7,10 +7,18 @@ import { copyToClipboard, extractRawText } from '../../lib/clipboard';
 
 // Mock clipboard API
 const mockWriteText = jest.fn();
-Object.assign(navigator, {
-  clipboard: {
+
+// Mock document and navigator
+Object.defineProperty(navigator, 'clipboard', {
+  value: {
     writeText: mockWriteText,
   },
+  writable: true
+});
+
+Object.defineProperty(window, 'isSecureContext', {
+  value: true,
+  writable: true
 });
 
 console.error = jest.fn();
@@ -19,6 +27,17 @@ describe('Copy Edge Cases', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockWriteText.mockResolvedValue(undefined);
+    
+    // Reset clipboard API availability
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText: mockWriteText },
+      writable: true
+    });
+    
+    Object.defineProperty(window, 'isSecureContext', {
+      value: true,
+      writable: true
+    });
   });
 
   describe('Long message handling', () => {
@@ -189,7 +208,7 @@ describe('Copy Edge Cases', () => {
       const result = await copyToClipboard('test');
       
       expect(result.success).toBe(false);
-      expect(result.error).toContain('clipboard access denied');
+      expect(result.error).toContain('Clipboard access denied. Please check browser permissions.');
     });
 
     test('handles quota exceeded error', async () => {
