@@ -3,6 +3,10 @@
 import { useChat, UIMessage } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 import { useEffect, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeHighlight from 'rehype-highlight';
+import 'highlight.js/styles/atom-one-dark.css';
 
 interface ChatProps {
   id?: string;
@@ -114,11 +118,54 @@ export default function Chat({ id, initialMessages }: ChatProps = {}) {
                     </svg>
                   </div>
                 )}
-                <div className="whitespace-pre-wrap">
-                  {message.parts.map((part, partIndex) =>
-                    part.type === 'text' ? <span key={partIndex}>{part.text}</span> : null
-                  )}
-                </div>
+                    <div className="prose prose-sm max-w-none dark:prose-invert">
+                      {message.role === 'assistant' ? (
+                        <ReactMarkdown
+                          remarkPlugins={[remarkGfm]}
+                          rehypePlugins={[rehypeHighlight]}
+                          components={{
+                            code: ({ node, inline, className, children, ...props }: any) => {
+                              const match = /language-(\w+)/.exec(className || '');
+                              return !inline && match ? (
+                                <pre className="bg-gray-900 text-gray-100 rounded-md p-3 overflow-x-auto border border-gray-700">
+                                  <code className={className} {...props}>
+                                    {children}
+                                  </code>
+                                </pre>
+                              ) : (
+                                <code className="bg-gray-800 text-gray-200 px-1.5 py-0.5 rounded text-sm" {...props}>
+                                  {children}
+                                </code>
+                              );
+                            },
+                            p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+                            ul: ({ children }) => <ul className="list-disc list-inside mb-2">{children}</ul>,
+                            ol: ({ children }) => <ol className="list-decimal list-inside mb-2">{children}</ol>,
+                            li: ({ children }) => <li className="mb-1">{children}</li>,
+                            h1: ({ children }) => <h1 className="text-lg font-bold mb-2">{children}</h1>,
+                            h2: ({ children }) => <h2 className="text-base font-bold mb-2">{children}</h2>,
+                            h3: ({ children }) => <h3 className="text-sm font-bold mb-1">{children}</h3>,
+                            blockquote: ({ children }) => (
+                              <blockquote className="border-l-4 border-gray-300 dark:border-gray-600 pl-3 italic text-gray-600 dark:text-gray-400 mb-2">
+                                {children}
+                              </blockquote>
+                            ),
+                            strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                            em: ({ children }) => <em className="italic">{children}</em>,
+                          }}
+                        >
+                          {message.parts
+                            .map((part) => (part.type === 'text' ? part.text : ''))
+                            .join('')}
+                        </ReactMarkdown>
+                      ) : (
+                        <div className="whitespace-pre-wrap">
+                          {message.parts.map((part, partIndex) =>
+                            part.type === 'text' ? <span key={partIndex}>{part.text}</span> : null
+                          )}
+                        </div>
+                      )}
+                    </div>
               </div>
             </div>
           </div>

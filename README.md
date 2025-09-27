@@ -7,6 +7,7 @@ A modern AI chatbot built with Next.js, TypeScript, and the latest AI SDK by Ver
 - 🤖 **Advanced AI-powered chat** with OpenAI-compatible API support
 - 💾 **Chat persistence** - conversations saved to local filesystem
 - 🔗 **Individual chat URLs** - each conversation has its own shareable URL  
+- 📝 **Markdown rendering** - proper display of formatted text, code blocks, tables, and lists
 - 🎨 **Beautiful, responsive UI** with Tailwind CSS
 - ⚡ **Real-time streaming responses** using AI SDK 5 patterns
 - 🔍 **Comprehensive monitoring** - complete request/response logging
@@ -97,6 +98,8 @@ chat-agent/
 - **@ai-sdk/react 2.x** - React hooks for AI integration
 - **@ai-sdk/openai-compatible** - OpenAI-compatible provider
 - **OpenAI-compatible APIs** - Supports DeepSeek, OpenAI, and other compatible providers
+- **React Markdown** - Markdown rendering with GitHub Flavored Markdown
+- **@tailwindcss/typography** - Beautiful typography for markdown content
 - **Zod 4** - Runtime type validation
 
 ## How It Works
@@ -135,6 +138,21 @@ const result = streamText({
   messages: convertToModelMessages(messages),
 });
 ```
+
+### Markdown Rendering
+
+Assistant messages automatically render markdown content including:
+
+- **Code blocks** with syntax highlighting
+- **Inline code** with proper styling
+- **Lists** (ordered and unordered)
+- **Headers** (H1, H2, H3)
+- **Tables** with responsive design
+- **Blockquotes** for emphasis
+- **Bold** and *italic* text
+- **GitHub Flavored Markdown** features
+
+User messages display as plain text to preserve exact input formatting.
 
 ### Chat Storage
 
