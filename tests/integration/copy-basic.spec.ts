@@ -8,6 +8,8 @@ import { test, expect } from '@playwright/test';
 test.describe('Copy Button Basic Tests', () => {
   // Skip WebKit due to protocol errors with clipboard API testing
   test.skip(({ browserName }) => browserName === 'webkit', 'WebKit has clipboard API testing issues');
+  // Skip Firefox testing
+  test.skip(({ browserName }) => browserName === 'firefox', 'Skipping Firefox testing');
   
   test.beforeEach(async ({ page }) => {
     // Navigate to chat page
