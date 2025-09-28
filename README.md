@@ -146,6 +146,85 @@ Every assistant response includes a **copy button** that allows you to quickly c
 - Extracts plain text from markdown-rendered content
 - Provides comprehensive error handling and user feedback
 
+## Testing
+
+This project includes comprehensive test coverage with both unit and integration tests.
+
+### Running Tests
+
+#### Unit Tests
+Run unit tests using Jest:
+```bash
+# Run all unit tests
+yarn test
+
+# Run unit tests in watch mode
+yarn test --watch
+
+# Run unit tests with coverage
+yarn test --coverage
+```
+
+#### Integration Tests
+Run integration tests using Playwright:
+```bash
+# Install Playwright browsers (first time only)
+npx playwright install
+
+# Run all integration tests
+yarn test:integration
+
+# Run integration tests in headed mode (see browser)
+yarn test:integration --headed
+
+# Run integration tests for specific browser
+yarn test:integration --project=chromium
+
+# Run specific test file
+yarn test:integration tests/integration/copy-basic.spec.ts
+```
+
+#### Performance Tests
+Run performance-focused tests:
+```bash
+# Run performance tests
+yarn test:performance
+
+# Run performance tests with detailed reports
+yarn test:performance --reporter=html
+```
+
+### Test Structure
+
+```
+tests/
+├── unit/                          # Unit tests (Jest)
+│   ├── clipboard.test.ts          # Clipboard utility tests
+│   └── copy-edge-cases.test.ts    # Edge case testing
+├── integration/                   # Integration tests (Playwright)
+│   ├── copy-basic.spec.ts         # Basic copy functionality
+│   ├── copy-functionality.spec.ts # Advanced copy features
+│   ├── copy-feedback.spec.ts      # Visual feedback testing
+│   └── copy-error-handling.spec.ts # Error scenario testing
+└── performance/                   # Performance tests
+    └── copy-performance.spec.ts   # Copy operation performance
+```
+
+### Test Coverage
+
+- **Unit Tests**: Clipboard utilities, error handling, edge cases
+- **Integration Tests**: User interactions, visual feedback, cross-browser compatibility
+- **Performance Tests**: Copy operation speed, UI responsiveness
+- **Browser Support**: Chromium-based browsers (Firefox and WebKit skipped for clipboard API compatibility)
+
+### Test Configuration
+
+Tests are configured to:
+- Skip Firefox and WebKit browsers for clipboard API testing
+- Use mock clipboard API for consistent testing
+- Include comprehensive error scenario coverage
+- Validate performance requirements (< 100ms copy operations)
+
 ## Customization
 
 ### Changing the AI Provider
