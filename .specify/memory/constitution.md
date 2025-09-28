@@ -1,3 +1,15 @@
+<!--
+Sync Impact Report:
+- Version change: 1.0.0 → 1.1.0
+- Modified principles: (none renamed)
+- Added sections: X. First Principles Thinking
+- Removed sections: None
+- Templates requiring updates:
+  ✅ .specify/templates/plan-template.md (footer version reference)
+  ✅ .specify/memory/constitution.md (this file)
+- Follow-up TODOs: None
+-->
+
 # Chat Agent Constitution
 
 ## Core Principles
@@ -29,6 +41,13 @@ Favor explicit types, names, and data flow. Hidden globals, ambient state, and i
 ### IX. Pragmatism over Purity
 Prefer practical solutions that ship value without compromising reliability. Abstract later, not sooner.
 
+### X. First Principles Thinking
+Decompose problems to fundamentals and reason up from facts:
+- Define the outcome and constraints explicitly. Avoid solution-first framing.
+- Identify invariants and real bottlenecks via measurement, not assumptions.
+- Replace analogies with first-order models; validate with small experiments.
+- When consensus relies on tradition, re-derive and justify or remove it.
+
 ## Development Workflow
 
 - Trunk is protected. All work lands via PRs from topic branches.
@@ -59,4 +78,4 @@ Prefer practical solutions that ship value without compromising reliability. Abs
 - This constitution supersedes ad-hoc practices. Exceptions require written justification in the PR description.
 - Amendments are made via PR that updates this file, with version bump and rationale.
 
-**Version**: 1.0.0 | **Ratified**: 2025-09-28 | **Last Amended**: 2025-09-28
+**Version**: 1.1.0 | **Ratified**: 2025-09-28 | **Last Amended**: 2025-09-28
