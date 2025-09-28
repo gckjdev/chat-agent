@@ -1,50 +1,62 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# Chat Agent Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Simplicity First (NON-NEGOTIABLE)
+Prefer the simplest design that solves the problem. Delete complexity aggressively. If a reader needs a diagram to understand a function, it is too complex.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Correctness and Readability over Cleverness
+Readable code that is obviously correct beats tricky code. Names must explain intent; control flow should avoid deep nesting; use guard clauses and early returns.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Small, Reversible Changes
+Make minimal, well-scoped edits with clear intent. Each change should be easy to review, easy to revert, and come with tests.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Performance and Resource Awareness
+Measure before optimizing; do not ship accidental regressions. Avoid unnecessary allocations, blocking I/O on hot paths, and N+1 patterns.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Clear Interfaces and Ownership
+Define explicit interfaces and single owners for behaviors. Avoid leaky abstractions and magical side effects. Public APIs are stable contracts.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+### VI. Fail Fast with Actionable Signals
+Errors must contain context and be easy to debug. No silent catches. Log concisely with identifiers and user impact.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### VII. Tests are Contracts
+Tests must be deterministic, fast, and meaningful. No flakiness tolerated. Integration tests validate user-facing behavior; unit tests protect core logic.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+### VIII. Explicit over Implicit
+Favor explicit types, names, and data flow. Hidden globals, ambient state, and implicit mutations are discouraged.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+### IX. Pragmatism over Purity
+Prefer practical solutions that ship value without compromising reliability. Abstract later, not sooner.
+
+## Development Workflow
+
+- Trunk is protected. All work lands via PRs from topic branches.
+- PRs must be small, pass CI, and include tests when behavior changes.
+- Commit messages describe the user impact first, then technical detail.
+- Code style: match existing conventions; do not reformat unrelated code.
+
+## Quality Gates
+
+- Lint and type checks must pass.
+- Unit and integration tests must be green locally and in CI.
+- No new flaky tests. Performance budgets enforced on critical paths.
+- Public API changes require a brief migration note in the PR.
+
+## Observability and Logging
+
+- Logs are concise and actionable; include request IDs and error codes.
+- Avoid noisy logs; every line must earn its keep.
+- Metrics and traces exist for critical user flows.
+
+## Security and Privacy
+
+- Secrets never enter source control. Environment variables only.
+- Minimize data collection; log redaction by default for user data.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+- This constitution supersedes ad-hoc practices. Exceptions require written justification in the PR description.
+- Amendments are made via PR that updates this file, with version bump and rationale.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2025-09-28 | **Last Amended**: 2025-09-28
