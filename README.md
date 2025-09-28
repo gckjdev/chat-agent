@@ -8,6 +8,7 @@ A modern AI chatbot built with Next.js, TypeScript, and the latest AI SDK by Ver
 - 💾 **Chat persistence** - conversations saved to local filesystem
 - 🔗 **Individual chat URLs** - each conversation has its own shareable URL  
 - 📝 **Markdown rendering** - proper display of formatted text, code blocks, tables, and lists
+- 📋 **Copy to clipboard** - one-click copy for any assistant response with visual feedback
 - 🎨 **Beautiful, responsive UI** with Tailwind CSS
 - ⚡ **Real-time streaming responses** using AI SDK 5 patterns
 - 🔍 **Comprehensive monitoring** - complete request/response logging
@@ -78,9 +79,12 @@ chat-agent/
 │   ├── layout.tsx            # Root layout
 │   └── page.tsx              # Home page (redirects to /chat)
 ├── components/
-│   └── Chat.tsx              # Main chat component with persistence
+│   ├── Chat.tsx              # Main chat component with persistence
+│   ├── CopyButton.tsx        # Copy to clipboard component
+│   └── CopyFeedback.tsx      # Copy operation feedback
 ├── lib/
-│   └── chat-store.ts         # Chat persistence utilities
+│   ├── chat-store.ts         # Chat persistence utilities
+│   └── clipboard.ts          # Clipboard operations and utilities
 ├── .chats/                   # Chat history files (auto-created, gitignored)
 ├── package.json
 ├── tailwind.config.js
@@ -101,6 +105,7 @@ chat-agent/
 - **React Markdown** - Markdown rendering with GitHub Flavored Markdown
 - **@tailwindcss/typography** - Beautiful typography for markdown content
 - **Zod 4** - Runtime type validation
+- **Lucide React** - Beautiful icons including copy functionality
 
 ## How It Works
 
@@ -116,6 +121,30 @@ chat-agent/
 - `/` - Home page (redirects to new chat)
 - `/chat` - Creates new chat and redirects to `/chat/[id]`
 - `/chat/[id]` - Individual chat page with persistent history
+
+### Copy to Clipboard Feature
+
+Every assistant response includes a **copy button** that allows you to quickly copy the message content:
+
+- **Always Visible**: Copy icon is always visible (not hidden behind hover states)
+- **Raw Text Copy**: Copies plain text content without markdown formatting
+- **Visual Feedback**: Shows success/error feedback with icon changes and tooltips
+- **Browser Compatibility**: Works with modern Clipboard API and fallback for older browsers
+- **Error Handling**: Graceful handling of clipboard permission errors
+- **Keyboard Accessible**: Supports Enter and Space key activation
+- **Performance Optimized**: Copy operations complete in under 100ms
+
+**Usage:**
+1. Look for the copy icon 📋 next to any assistant message
+2. Click the icon to copy the raw text content
+3. Visual feedback confirms successful copy operation
+4. Paste the content anywhere you need it
+
+**Technical Implementation:**
+- Uses modern `navigator.clipboard.writeText()` API when available
+- Falls back to `document.execCommand('copy')` for older browsers
+- Extracts plain text from markdown-rendered content
+- Provides comprehensive error handling and user feedback
 
 ## Customization
 

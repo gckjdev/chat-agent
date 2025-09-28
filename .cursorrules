@@ -69,5 +69,8 @@ This is a Next.js 14 AI chatbot application using the Vercel AI SDK v5 with chat
 - write unit test
 - use playwright for functional testing
 
+### Dependency
+- use yarn to install and manage dependencies
+
 ### Documentation
-- Update readme for every feature change
+- Update Readme.md for every feature change

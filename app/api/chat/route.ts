@@ -14,7 +14,8 @@ const customProvider = createOpenAICompatible({
 });
 
 export async function POST(req: Request) {
-  const { message, id }: { message?: UIMessage; id?: string; messages?: UIMessage[] } = await req.json();
+  const body = await req.json();
+  const { message, id, messages: legacyMessages }: { message?: UIMessage; id?: string; messages?: UIMessage[] } = body;
   
   let messages: UIMessage[];
   let chatId: string;
@@ -26,7 +27,6 @@ export async function POST(req: Request) {
     chatId = id;
   } else {
     // Legacy format for backward compatibility
-    const legacyMessages = (await req.json()).messages;
     messages = legacyMessages || [];
     chatId = generateId();
   }
